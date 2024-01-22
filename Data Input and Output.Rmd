@@ -1,0 +1,45 @@
+---
+title: "Data Input and Output"
+author: "Chia-Yu Wei"
+date: "2023-11-23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data Input and Output
+
+
+### CSV Input and Output
+```{r}
+ex <- read.csv("C:/Users/Chiayu/Desktop/R-Course-HTML-Notes/R-Course-HTML-Notes/R-for-Data-Science-and-Machine-Learning/Data Input and Output with R/example.csv")
+```
+```{r}
+# It will be stored in the location where this file in(here is Data ...)
+write.csv(ex, file = 'my_new_example.csv')
+# What we stored as 'mtcars' before
+read.csv('example.csv')
+```
+
+
+\newpage
+## Excel files
+```{r}
+library(readxl)
+# To know the name of these sheets
+sheet_name <- excel_sheets("C:/Users/Chiayu/Desktop/R-Course-HTML-Notes/R-Course-HTML-Notes/R-for-Data-Science-and-Machine-Learning/Data Input and Output with R/Sample-Sales-Data.xlsx")
+
+df <- read_excel('C:/Users/Chiayu/Desktop/R-Course-HTML-Notes/R-Course-HTML-Notes/R-for-Data-Science-and-Machine-Learning/Data Input and Output with R/Sample-Sales-Data.xlsx', sheet = "Sheet1")
+head(df)
+```
+
+```{r}
+summary(df)
+```
+
+```{r}
+entire_work <- lapply(sheet_name, read_excel, path = 'C:/Users/Chiayu/Desktop/R-Course-HTML-Notes/R-Course-HTML-Notes/R-for-Data-Science-and-Machine-Learning/Data Input and Output with R/Sample-Sales-Data.xlsx')
+entire_work
+```

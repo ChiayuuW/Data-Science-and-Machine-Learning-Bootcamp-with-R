@@ -1,0 +1,53 @@
+---
+title: "List"
+author: "Chia-Yu Wei"
+date: "2023-11-23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## List
+
+```{r}
+v <- c(1, 2, 3)
+m <- matrix(1:10, nrow = 2)
+df <-mtcars
+
+my_list <- list(v, m, df)
+my_list
+```
+
+```{r}
+# Just like you create the file name for files
+my_name_list <- list(sample_vec = v, my_matrix = m, sample_df = df)
+my_name_list
+```
+
+```{r}
+my_list[1]
+class(my_list[1])                               # List
+my_name_list[1]
+my_name_list['sample_vec']
+
+
+my_name_list$sample_vec
+class(my_name_list$sample_vec)                  # Numeric
+
+# You open two layer of files.
+my_list[[1]]                                    # Also numeric
+class(my_list[[1]])
+my_name_list[['sample_vec']]
+```
+
+```{r}
+(double_list <- c(my_list, my_name_list))
+```
+
+### You can know the type, length, or shape of your list.
+* It's not only useful for list, you can use it on different type of data.
+```{r}
+str(my_name_list)
+```

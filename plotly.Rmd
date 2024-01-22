@@ -1,0 +1,37 @@
+---
+title: "Interactive Visualization with Plotly"
+author: "Chia-Yu Wei"
+date: "2023-12-15"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Learn about 'plotly'
+```{r}
+# install.packages('plotly')
+library(ggplot2)
+library(plotly)
+```
+```{r}
+pl <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
+print(pl)
+
+```
+
+
+### We can use plotly to interact with the data and graph.
+It's a really cool tool.
+```{r}
+gpl <- ggplotly(pl)
+print(gpl)
+```
+### We can find the documentation example graph and code from the [link](https://plotly.com/ggplot2/)
+```{r}
+#https://plot.ly/ggplot2/
+
+```

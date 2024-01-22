@@ -1,0 +1,160 @@
+---
+title: "ggplot2"
+author: "Chia-Yu Wei"
+date: "2023-11-28"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# ggplot2
+The package which is useful and popular to be used on data visualization.
+```{r}
+library(ggplot2)
+```
+
+### Data (no plot shown yet)
+```{r}
+
+ggplot(data = mtcars) 
+```
+
+### Data and Aesthetics
+```{r}
+ggplot(data = mtcars, aes(x = mpg, y = hp))
+```
+
+### Data, Aesthetics, and Geometries
+```{r}
+pl <- ggplot(data = mtcars, aes(x = mpg, y = hp))
+pl + geom_point()
+```
+
+### Data, Aesthetics, Geometries, and Facets
+```{r}
+pl <- ggplot(data = mtcars, aes(x = mpg, y = hp)) +
+  geom_point() 
+pl + facet_grid(cyl ~ .)
+```
+
+### Data, Aesthetics, Geometries, Facets, and Statistics
+```{r}
+pl <- ggplot(data = mtcars, aes(x = mpg, y = hp)) +
+  geom_point() 
+pl + facet_grid(cyl ~ .) + stat_smooth()
+```
+
+### Data, Aesthetics, Geometries, Facets, Statistics, and Coordinates
+```{r}
+pl <- ggplot(data = mtcars, aes(x = mpg, y = hp)) +
+  geom_point() 
+pl2 <- pl + facet_grid(cyl ~ .) + stat_smooth()
+pl2 + coord_cartesian(xlim = c(15, 25))
+```
+
+### Data, Aesthetics, Geometries, Facets, Statistics, Coordinates, and Theme
+```{r}
+pl <- ggplot(data = mtcars, aes(x = mpg, y = hp)) +
+  geom_point() 
+pl2 <- pl + facet_grid(cyl ~ .) + stat_smooth()
+pl2 + coord_cartesian(xlim = c(15, 25)) + theme_bw()
+```
+
+\newpage
+# Histograms
+Here is a Rstudio cheat sheet  (https://statsandr.com/blog/files/ggplot2-cheatsheet.pdf)
+Use: + geom_histogram()
+
+```{r}
+#install.packages('ggplot2movies')
+library(ggplot2movies)
+```
+```{r}
+# Data + Aesthetics
+colnames(movies)
+pl <- ggplot(movies, aes(x = rating))
+```
+
+```{r}
+# Data + Aesthetics + Geometries
+pl2 <- pl + geom_histogram(binwidth = 0.1,
+                          color = 'black',
+                          fill = 'red',
+                          alpha = 0.3)
+print(pl2)
+# Alpha: transparency
+```
+### Adjusted Version (advanced)
+```{r}
+# Data + Aesthetics + Geometries
+pl2_adj <- pl + geom_histogram(binwidth = 0.1,
+                          aes(fill = ..count..))
+print(pl2_adj)
+# Alpha: transparency
+```
+
+```{r}
+# Make it to center
+(pl3 <- pl2 + xlab('Movie Rating') + ylab('Count') + ggtitle("My Title") + theme(plot.title = element_text(hjust = 0.5)))
+```
+\newpage
+# Plot
+```{r}
+library(ggplot2)
+df <- mtcars
+
+# Data & Aesthetics
+pl <- ggplot(df, aes(x = wt, y = mpg))
+
+# Geometric
+pl + geom_point(aes(size = cyl),  # The size changes with the 'cyl' data.
+                col = 'blue',
+                alpha = 0.5)
+pl + geom_point(aes(size = factor(cyl)),  # The size changes with the 'cyl' data.
+                col = '#006699',
+                alpha = 0.5)
+
+# factor() remove the category that we don't use.
+```
+
+### Shape
+```{r}
+# The shape and color changes with the 'cyl' data.
+pl2 <- pl + geom_point(aes(size = hp, color = hp),
+                       alpha = 0.8)
+pl2 + scale_color_gradient(low = '#78fb5c', high = 'red')
+```
+Here is the link to ggplot color code:(https://redketchup.io/color-picker)
+
+\newpage
+# Boxplot
+```{r}
+df <- mpg
+
+pl <- ggplot(df, aes(x = class))
+pl + geom_bar(aes(fill = drv))
+```
+```{r}
+pl + geom_bar(aes(fill = drv), position = "dodge")
+```
+```{r}
+pl + geom_bar(aes(fill = drv), position = "fill")
+```
+
+\newpage
+# Boxplots
+```{r}
+df <- mtcars
+# X value should not be continuous vale, it should be category variable,
+pl <- ggplot(df, aes(x = factor(cyl), y = mpg))
+pl + geom_boxplot(fill = 'pink')
+```
+```{r}
+pl + geom_boxplot(aes(fill = factor(cyl))) + theme_dark()
+```
+```{r}
+# Flip the coordinate
+pl + geom_boxplot() +coord_flip()
+```

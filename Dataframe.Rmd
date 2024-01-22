@@ -1,0 +1,117 @@
+---
+title: "Dataframe"
+author: "Chia-Yu Wei"
+date: "2023-11-23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataframe
+```{r}
+head(mtcars)
+```
+```{r}
+mtcars[(mtcars$mpg > 20) & (mtcars$cyl == 6), ]
+```
+
+### Output the raviables that I want. 
+```{r}
+mtcars[(mtcars$mpg > 20) & (mtcars$cyl == 6), c('mpg', 'cyl', 'hp')]
+# There are same result
+mtcars[, c(1, 2)]
+mtcars[, c('mpg', 'cyl')]
+mtcars[, 1:2]
+```
+### Subset(): subset(data, comdetion)
+```{r}
+subset(mtcars, mpg > 20 & cyl == 6)                  # 3x11
+```
+\newpage
+## Dealing with missing data
+```{r, results = 'hide'}
+# We get the whole TRUE/FALSE data frame for original data.
+is.na(mtcars)
+```
+```{r}
+# We add any() to get shorter answer.
+any(is.na(mtcars))
+any(is.na(df))
+# Replace the missing value to the mean of mtcars$mpg
+mtcars$mpg[is.na(mtcars$mpg)] <- mean(mtcars$mpg)
+```
+\newpage
+## Exercise  
+### Problem 1
+```{r}
+Age <- c(22, 25, 26)
+Weight <- c(150, 165, 120)
+Sex <- c('M', 'M', 'F')
+mydf <- data.frame(Age = Age, Weight = Weight, Sex = Sex,
+                   row.names = c('Sam', 'Frank', 'Amy'))
+mydf
+```
+
+### Problem 2
+```{r}
+is.data.frame(mtcars)
+```
+
+### Problem 3
+```{r}
+mat <- matrix(1:25,nrow = 5)
+mat_df <- as.data.frame(mat)
+class(mat)
+class(mat_df)
+```
+
+### Problem 4
+```{r}
+df <- mtcars
+```
+
+### Problem 5
+```{r}
+head(df)
+```
+
+### Problem 6
+```{r}
+mean(df$mpg)
+```
+
+### Problem 7
+```{r}
+mtcars[mtcars$cyl == 6, ]
+```
+
+### Ploblem 8
+```{r}
+mtcars[, c('am', 'gear', 'carb')]
+```
+
+### Problem 9
+```{r}
+df$performance <- df$hp / df$wt
+head(df)
+```
+
+### Problem 10
+(a)
+```{r}
+df$performance <- round(df$performance, 2)
+head(df)
+```
+(b)
+```{r}
+condition <- df$hp > 100 & df$wt > 2.5
+new_df <- mtcars[condition, ]
+mean(new_df$mpg)
+```
+### Problem 11
+```{r}
+Hornet <- df[c('Hornet Sportabout'), ]
+Hornet$mpg
+```
