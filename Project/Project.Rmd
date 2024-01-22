@@ -1,0 +1,79 @@
+---
+title: "Project"
+author: "Chia-Yu Wei"
+date: "2023-12-04"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Correlation between corruption and development
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(data.table)
+```
+
+### Import the data from ggplot2
+```{r}
+# Name the data as 'df'
+df <- fread("C:/Users/Chiayu/OneDrive/Desktop/Data Science and Machine Learning Bootcamp with R/Project/Economist_Assignment_Data.csv",
+            drop = 1)
+head(df)
+```
+
+## Relation between CPI and HDI
+- Consumer Price Index (CPI) is a measure of the average change over time in the prices paid by urban consumers for a market basket of consumer goods and services.
+- Human Development Index (HDI) 
+
+```{r}
+pl <- ggplot(
+  df,
+  aes(x = CPI, y = HDI, color = Region))
+pl2 <- pl +
+  geom_point(size = 3, shape = 1) + 
+  theme_gray()
+pl2
+```
+
+Now, we gonna create the linear regression line of the model y ~ log(x)
+```{r}
+# Make linear regression
+pl3 <- pl2 + geom_smooth(aes(group = 1),
+                  method = 'lm', 
+                  formula = y ~ log(x),
+                  se = FALSE,
+                  color = 'red')
+pl3
+```
+
+### Using *geom_text* to add text to the plot.
+```{r}
+pl3 + geom_text(aes(label = Country))
+```
+
+# Label some counties.
+```{r}
+Total_label <- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan",
+                 "Afghanistan", "Congo", "Greece", "Argentina", "Brazil",
+                 "India", "Italy", "China", "South Africa", "Spane",
+                 "Botswana", "Cape Verde", "Bhutan", "Rwanda", "France",
+                 "United States", "Germany", "Britain", "Barbados", "Norway",
+                 "Japan", "New Zealand", "Singapore")
+pl4 <- pl3 + geom_text(aes(label = Country),
+                color = "gray20",
+                data = subset(df, Country %in% Total_label),
+                check_overlap = TRUE)
+pl4
+```
+### Add limit to make the graph better to be watched.
+```{r}
+pl4 + theme_bw() + scale_x_continuous(name = 'Same x axis as the Economist Plot',
+                                      limits = c(1, 10),
+                                      breaks = 1:10)
+```

@@ -1,0 +1,116 @@
+---
+title: "Capstone Data Project"
+author: "Chia-Yu Wei"
+date: "2023-2-15"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+We use the data from [Sean Lahaman's Website](http://www.seanlahman.com/baseball-archive/statistics/). It's a useful score for baseball statistics.
+```{r}
+# Import data
+batting <- read.csv('batting.csv')
+head(batting)
+```
+It's a data with 24 variables.   
+```{r}
+str(batting)
+```
+
+### Let's create the new statistic! For example, for Batting Average, here's the formula for batting average:
+$$
+AVG = \frac{H}{AB}
+$$
+ 
+Which means that the Batting Average is equal to H (Hits) divided by AB (At Base). So we'll do the following to create a new column called **BA** and add it to our data frame:
+```{r}
+batting$AVG <- batting$H / batting$AB
+tail(batting$AVG)
+```
+
+### Now, calculate On Base Percentage (OBP) and Slugging Percentage (SLG).
+```{r}
+#On Base Percentage
+attach(batting)
+batting$OBP <- (H + BB + HBP) / (AB + BB + HBP + SF)
+```
+```{r}
+batting$X1B <- H - X2B - X3B - HR
+
+#Slugging Percentage
+batting$SLG <- ((1 * batting$X1B) + (2 * X2B) + (3 * X3B) + (4 * HR)) / AB
+```
+```{r}
+str(batting)
+```
+
+\newpage
+## Merging Salary Data with Batting Data
+Let's merge data about salary with the player data above.
+```{r}
+salary <- read.csv('Salaries.csv')
+head(salary)
+```
+Since our salary data starts from 1985 but batting data is starting from 1871, we should select the data after 1985.
+```{r}
+batting <- subset(batting, yearID >= 1985)
+summary(batting)
+```
+
+### Let's merge the salary data and batting data.
+```{r}
+combo <- merge(batting, salary, by = c('playerID', 'yearID'))
+head(combo)
+```
+
+\newpage
+## Analyzing the Lost Player
+From story about *The 2022 Oakland A's*, the Oakland A's lost 3 key players during the off-season. We'll want to get their stats to see what we have to replace. The players lost were: first baseman 2000 AL MVP Jason Giambi (giambja01) to the New York Yankees, outfielder Johnny Damon (damonjo01) to the Boston Red Sox and infielder Rainer Gustavo "Ray" Olmedo ('saenzol01').
+
+### Use the subset() function to get a data frame called lost_players from the combo data frame consisting of those 3 players. Hint: Try to figure out how to use %in% to avoid a bunch of or statements!
+```{r}
+lost_player <- subset(combo,
+                      playerID %in% c('giambja01','damonjo01','saenzol01'))
+
+
+#44x31
+dim(lost_player)
+```
+
+We only get the data which yearID is 2001, and reduce the variables to what we need.
+```{r}
+lost_player <- subset(lost_player, yearID == 2001)
+new_lost <- lost_player[, c('playerID', 'H', 'X2B', 'X3B', 'HR', 'OBP', 'SLG', 'AB')]
+head(new_lost)
+```
+
+\newpage
+## Task
+Now we have all the information we need! Here is your final task - Find Replacement Players for the key three players we lost! However, you have three constraints:
+
+- The total combined salary of the three players can not exceed 15 million dollars.
+
+- Their combined number of At Bats (AB) needs to be equal to or greater than the lost players(minimum is 520 in lost platers)
+).
+- Their mean OBP had to equal to or greater than the mean OBP of the lost players
+```{r}
+library(dplyr)
+library(ggplot2)
+avail.players <- filter(combo, yearID == 2001)
+ggplot(avail.players, aes(x = OBP, y = salary)) + geom_point()
+```
+```{r}
+avail.players <- filter(avail.players, salary < 8000000, OBP > 0, AB >= 520)
+candidate <- head(arrange(avail.players,desc(OBP)),10)
+(possible <- candidate[,c('playerID','OBP','AB','salary')])
+```
+We select some players who is satisfied with our condition, and sort the data by *OBP*. The first choice is 'giambja01', but we can not choose him agian. Therefore, we should choose player rank2 to 4.
+```{r}
+possible[2:4, ]
+```
